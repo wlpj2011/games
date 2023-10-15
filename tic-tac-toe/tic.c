@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void print_board(int **board, int size);
-
-int **create_board(int size);
-
-void free_board(int **board, int size);
-
-char set_mark(int record);
-
-void move(int **board, int size, int player, int location);
+void print_board(int **board, int size); //Prints the current state of the board
+int **create_board(int size); //Creates a blank size x size board
+void free_board(int **board, int size); //Frees the allocated memory
+char set_mark(int record); //Converts an integer board mark to a printable one
+void move(int **board, int size, int player, int location); //Makes the given move on the board
+int decide_move(int **board, int size, int player); //Decides what move should be made
+int player_input(int size); //Gets the players move from stdin
+int evaluate_board(int **board, int size);        //Decides if the game is over and who has won if so
+int play_game(int **board, int size, int player); //Manages the game loop and returns the winner
 
 int main(int argc, char *argv[]){
   if(argc != 2){
@@ -97,4 +97,53 @@ void move(int **board, int size, int player, int location){
   int j = location % size;
   board[i][j] = record;
   
+}
+
+int decide_move(int **board, int size, int player){
+
+  return -1;
+}
+
+int evaluate_board(int **board, int size){
+
+  for (int i = 0; i < size; i++){
+    int result_horizontal = 0;
+    int result_vertical = 0;
+    for (int j = 0; j < size; j++)
+    {
+      result_horizontal += board[i][j];
+      result_vertical += board[j][i];
+    }
+    if((result_horizontal == 3) || (result_vertical == 3)){
+      return 0;
+    } else if((result_horizontal == -3) || (result_vertical == -3)){
+      return 1;
+    }
+  }
+  int result1 = 0;
+  int result2 = 0;
+  for (int i = 0; i < size; i++){
+    result1 += board[i][i];
+    result2 += board[i][size - i - 1];
+  }
+  if((result1 == 3) || (result2 == 3)){
+    return 0;
+  } else if((result1 == -3) || (result2 == -3)){
+    return 1;
+  }
+  return -1;
+}
+
+int play_game(int **board, int size, int player){
+  int current_player = 0;
+  while (evaluate_board(board, size) == -1){
+    if(current_player == player){
+      move(board, size, current_player, player_input(size));
+    }
+    else{
+      move(board, size, current_player, decide_move(board, size, current_player));
+    }
+    current_player = 1 - current_player;
+  }
+  return evaluate_board(board,size);
 }
