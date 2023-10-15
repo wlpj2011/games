@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 void print_board(int **board, int size); //Prints the current state of the board
 int **create_board(int size); //Creates a blank size x size board
@@ -8,7 +9,7 @@ char set_mark(int record); //Converts an integer board mark to a printable one
 void move(int **board, int size, int player, int location); //Makes the given move on the board
 int decide_move(int **board, int size, int player); //Decides what move should be made
 int player_input(int size); //Gets the players move from stdin
-int evaluate_board(int **board, int size);        //Decides if the game is over and who has won if so
+int evaluate_board(int **board, int size); //Decides if the game is over and who has won if so
 int play_game(int **board, int size, int player); //Manages the game loop and returns the winner
 
 int main(int argc, char *argv[]){
@@ -19,13 +20,35 @@ int main(int argc, char *argv[]){
 
   int **board = create_board(3);
 
+  system("clear");
   print_board(board, 3);
 
+  sleep(1);
   move(board, 3, 0, 4);
-  move(board, 3, 1, 2);
+  system("clear");
   print_board(board, 3);
-  
+
+  sleep(1);
+  move(board, 3, 1, 2);
+  system("clear");
+  print_board(board, 3);
+
+  sleep(1);
+
   free_board(board, 3);
+
+  system("clear");
+
+  /*
+  int SIZE = 3;
+  int PLAYER = 0;
+  int **board = create_board(SIZE);
+
+  system("clear");
+  play_game(board, SIZE, PLAYER);
+  free_board(board, SIZE);
+  system("clear");
+  */
 
   exit(0);
 }
@@ -100,6 +123,11 @@ void move(int **board, int size, int player, int location){
 }
 
 int decide_move(int **board, int size, int player){
+  //put a slowdown here if the AI is fast so player can see board after their move
+  return -1;
+}
+
+int player_input(int size){
 
   return -1;
 }
@@ -138,9 +166,11 @@ int play_game(int **board, int size, int player){
   int current_player = 0;
   while (evaluate_board(board, size) == -1){
     if(current_player == player){
+      print_board(board, size);
       move(board, size, current_player, player_input(size));
     }
     else{
+      print_board(board, size);
       move(board, size, current_player, decide_move(board, size, current_player));
     }
     current_player = 1 - current_player;
